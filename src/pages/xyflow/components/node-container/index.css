@@ -1,0 +1,37 @@
+.nc {
+    width: 300px;
+    border: 2px solid #347BED;
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.nc-header {
+    background-color: #F7F7F7;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 8px;
+}
+
+.nch-left {
+    flex: 1;
+    padding-left: 12px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.nchl-tag {
+    background-color: #3991FF;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 2px 4px;
+    color: white;
+}
+
+.nch-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 12px;
+}
