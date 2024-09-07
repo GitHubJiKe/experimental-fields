@@ -4,13 +4,15 @@ import Charts from "../pages/charts";
 import Flow from "../pages/xyflow";
 import WithBack from "../components/with-back";
 import Antv from "../pages/antv";
+import { BuildOutlined, HighlightOutlined, HomeOutlined, LineChartOutlined } from "@ant-design/icons";
+import XYFlow from "../pages/xyflow2";
 
 export const routeList = [
   {
     path: "/",
     element: <Home />,
     name: "Home",
-    icon: "home-o",
+    icon: <HomeOutlined />,
   },
   {
     path: "/charts",
@@ -20,7 +22,7 @@ export const routeList = [
       </WithBack>
     ),
     name: "Charts",
-    icon: "areachart-o",
+    icon: <LineChartOutlined />,
   },
   {
     path: "/flow",
@@ -30,7 +32,17 @@ export const routeList = [
       </WithBack>
     ),
     name: "Flow",
-    icon: "hierarchy-fill",
+    icon: <BuildOutlined />,
+  },
+  {
+    path: "/flow2",
+    element: (
+      <WithBack>
+        <XYFlow />
+      </WithBack>
+    ),
+    name: "Flow2",
+    icon: <BuildOutlined />,
   },
   {
     path: "/antv",
@@ -40,7 +52,7 @@ export const routeList = [
       </WithBack>
     ),
     name: "Antv",
-    icon: "hierarchy-fill",
+    icon: <HighlightOutlined />,
   },
 ];
 

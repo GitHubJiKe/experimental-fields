@@ -1,19 +1,60 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import { Cascader, Icon, Tag } from "@ss/mtd-react";
+import { FileTextFilled, } from "@ant-design/icons";
+import { Cascader, Tag } from "antd";
 import { useRef } from "react";
+import { eventBus } from "../utils";
+import { TOOGLE_MODAL } from "../../constant";
 
 export interface ITableBarComponentProps {
   color: string;
   dataSource: unknown;
+  groupId: string | number
 }
+interface Option {
+  value: string;
+  label: string;
+  children?: Option[];
+}
+
+const options: Option[] = [
+  {
+    value: 'zhejiang',
+    label: 'Zhejiang',
+    children: [
+      {
+        value: 'hangzhou',
+        label: 'Hangzhou',
+        children: [
+          {
+            value: 'xihu',
+            label: 'West Lake',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    value: 'jiangsu',
+    label: 'Jiangsu',
+    children: [
+      {
+        value: 'nanjing',
+        label: 'Nanjing',
+        children: [
+          {
+            value: 'zhonghuamen',
+            label: 'Zhong Hua Men',
+          },
+        ],
+      },
+    ],
+  },
+];
 
 export function TableBarComponent({ data }: { data: ITableBarComponentProps }) {
   const { dataSource, color } = data;
   const ref = useRef();
-  const popLayerContainer = () => {
-    return ref.current as unknown as HTMLDivElement;
-  };
 
   return (
     <div
@@ -28,28 +69,17 @@ export function TableBarComponent({ data }: { data: ITableBarComponentProps }) {
       <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 12 }}>
         <Tag color={color}>公式</Tag>
         <Cascader
-          size="small"
-          data={dataSource || []}
+          placeholder="Please select"
+          options={options}
           style={{ width: 150 }}
-          popLayer={{
-            getContainer: popLayerContainer,
-          }}
-          onVisibleChange={(visible) => {
-            if (visible) {
-              setTimeout(() => {
-                const wraper = document.querySelector(
-                  ".mtd-cascader-popup-wrapper"
-                );
-                if (wraper) {
-                  wraper.click();
-                }
-              }, 0);
-            }
+          getPopupContainer={() => ref.current}
+          onClick={() => {
+            eventBus.emit(TOOGLE_MODAL, true)
           }}
         />
       </div>
       <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
-        <Icon type="file-o" style={{ cursor: "pointer" }} />
+        <FileTextFilled style={{ color: '#000' }} />
       </div>
       <div
         ref={ref}

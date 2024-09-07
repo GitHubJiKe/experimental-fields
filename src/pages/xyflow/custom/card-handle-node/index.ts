@@ -1,6 +1,10 @@
 import { Position, XYPosition } from "@xyflow/react";
 
-export function genCardHandleNode(cardNodeId: string, position: XYPosition) {
+export function genCardHandleNode(
+  cardNodeId: string,
+  position: XYPosition,
+  groupId: string | number
+) {
   return {
     id: `cardhandle_${cardNodeId}`,
     type: "output",
@@ -8,8 +12,8 @@ export function genCardHandleNode(cardNodeId: string, position: XYPosition) {
     parentId: cardNodeId,
     extend: "parent",
     position,
-    width: 5,
-    height: 5,
+    width: 2,
+    height: 2,
     targetPosition: Position.Left,
     zIndex: -1,
     style: {
@@ -18,6 +22,9 @@ export function genCardHandleNode(cardNodeId: string, position: XYPosition) {
       borderColor: "blue",
       outlineColor: "transparent",
       boxShadow: "none",
+    },
+    data: {
+      groupId,
     },
   };
 }

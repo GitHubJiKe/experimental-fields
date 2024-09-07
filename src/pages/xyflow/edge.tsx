@@ -1,4 +1,4 @@
-import { Edge } from "@xyflow/react";
+import { Edge, MarkerType } from "@xyflow/react";
 import { uniqueId } from "lodash-es";
 
 export function createEdge(source: string, target: string): Edge {
@@ -7,5 +7,7 @@ export function createEdge(source: string, target: string): Edge {
     source,
     target,
     type: "simplebezier",
+    markerEnd: { type: MarkerType.Arrow },
+    data: { groupId: source }
   };
 }

@@ -11,7 +11,7 @@ export interface TableHeaderNode {
   position: TPosition;
   style?: CSSProperties;
   extend: "parent";
-  parentId: string;
+  parentId?: string;
   draggable?: boolean;
 }
 
@@ -25,5 +25,6 @@ export function genTableHeaderNode(
     type: TABLE_HEADER_NODE_TYPE,
     draggable: false,
     zIndex: 3,
+    parentId: cardNodeId,
   };
 }

@@ -1,9 +1,9 @@
 import { useRef, useEffect } from "react";
-import { Icon } from "@ss/mtd-react";
 import { ReactFlow, Node, Handle, useNodes, useNodeId } from "@xyflow/react";
 import NodeItem from "../node-item";
 import "./index.css";
 import { isArray, isObject } from "lodash-es";
+import { FileTextOutlined } from "@ant-design/icons";
 
 interface INodeContainerProps {
   data: {
@@ -33,7 +33,7 @@ export default function NodeContainer({ data }: INodeContainerProps) {
           <span className="nchl-tag">公式</span>
         </div>
         <div className="nch-right">
-          <Icon type="file-o" />
+          <FileTextOutlined />
         </div>
       </div>
       {childrenRef.current.map((item) => (

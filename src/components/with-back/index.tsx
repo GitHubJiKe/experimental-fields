@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@ss/mtd-react";
+import { Button } from "antd";
 interface WithBackProps {
   children?: ReactNode;
 }

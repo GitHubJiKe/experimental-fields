@@ -7,16 +7,19 @@ import {
   useStoreApi,
   Node,
   Edge,
+  useEdges,
 } from "@xyflow/react";
 import { eventBus, justifyContent } from "../utils";
-import { createCardNodeGroup } from "../../node";
+import { cardNodeWidth, createCardNodeGroup } from "../../node";
 import { COLOR_MAP, SET_EDGE_EVENT, SET_NODE_EVENT } from "../../constant";
 import { createEdge } from "../../edge";
+import { genTableRowNode } from ".";
 
 export interface ITableRowComponentProps {
   columns: Column[];
   row: Record<string, unknown>;
   selected: boolean;
+  groupId: string | number;
 }
 
 export default function TableRowComponent({
@@ -28,11 +31,13 @@ export default function TableRowComponent({
 
   const nodeId = useNodeId();
   const nodes = useNodes();
+  const edges = useEdges()
   const storeApi = useStoreApi();
 
   const rowNode = nodes.find((node) => node.id === nodeId)!;
   const cardNode = useNodesData(rowNode.parentId!);
   const color = cardNode?.data.color as string;
+
 
   const onRowClick = () => {
     if (selected) {
@@ -43,22 +48,24 @@ export default function TableRowComponent({
     if (prevLevel >= 4) {
       return;
     }
+
+    const curRowNodeId = rowNode.id;
+
     const { nodes: oldNodes, edges: oldEdges } = storeApi.getState();
     const allCardNodes = oldNodes.filter((node) => {
       return node.type === "group";
     });
 
-    const allCardNodeIds = allCardNodes.map((node) => node.id);
+    const nextLevel = prevLevel + 1
+    const siblings = allCardNodes.filter(node => node.data.level === nextLevel).length
 
-    const siblings = oldEdges.filter((edge) => {
-      const tempCardNodeId = edge.target.replace(/cardhandle_/, "");
-      return allCardNodeIds.includes(tempCardNodeId);
-    }).length;
-
+    const prevCardNode = oldNodes.find(node => node.id === cardNode?.id)
     const cardNodeGroups = createCardNodeGroup(
-      prevLevel + 1,
+      nextLevel,
       COLOR_MAP.DEEP_ORANGE,
-      siblings
+      siblings,
+      prevCardNode as Node,
+      curRowNodeId
     );
 
     oldNodes.forEach((node) => {
@@ -66,22 +73,76 @@ export default function TableRowComponent({
         node.data["selected"] = true;
       }
     });
+    const cardRowNode = genTableRowNode({
+      data: {
+        columns,
+        groupId: curRowNodeId,
+        row: {
+          city: "成都",
+          cur: -12,
+          con: 24,
+        },
+        selected: false,
+      },
+      position: {
+        x: 2,
+        y: 46 + 44,
+      },
+      extend: "parent",
+      style: {
+        width: cardNodeWidth - 4,
+      },
+    }, cardNodeGroups[0].id)
+    const cardRowNode2 = genTableRowNode({
+      data: {
+        columns,
+        groupId: curRowNodeId,
+        row: {
+          city: "成都",
+          cur: -100,
+          con: 24000,
+        },
+        selected: false,
+      },
+      position: {
+        x: 2,
+        y: 46 + 44 + 34,
+      },
+      extend: "parent",
+      style: {
+        width: cardNodeWidth - 4,
+      },
+    }, cardNodeGroups[0].id)
 
-    const newNodes = [...oldNodes, ...cardNodeGroups] as Node[];
-    // .sort(
-    //   (a, b) => {
-    //     if (a.parentId === b.parentId) {
-    //       return 0;
-    //     }
-    //     return a.parentId && !b.parentId ? 1 : -1;
-    //   }
-    // );
-    console.log(newNodes);
+    const newNodes = [...oldNodes, ...cardNodeGroups, cardRowNode, cardRowNode2] as Node[];
+
     eventBus.emit(SET_NODE_EVENT, newNodes);
 
     const newEdge = createEdge(rowNode.id, cardNodeGroups[1].id);
+
     eventBus.emit(SET_EDGE_EVENT, [...oldEdges, newEdge] as Edge[]);
   };
+
+  const onHideRow = () => {
+    nodes.forEach(node => {
+      if (node.data && node.data.groupId === rowNode.id) {
+        node.hidden = true
+      }
+    })
+
+    edges.forEach(edge => {
+      if (edge.data && edge.data.groupId === rowNode.id) {
+        edge.hidden = true
+      }
+    })
+
+
+    eventBus.emit(SET_NODE_EVENT, [...nodes])
+    eventBus.emit(SET_EDGE_EVENT, [...edges])
+
+
+  }
+
   const rgbaColor = `rgba(${parseInt(color.slice(1, 3), 16)}, ${parseInt(
     color.slice(3, 5),
     16
@@ -99,6 +160,7 @@ export default function TableRowComponent({
         paddingTop: 4,
         paddingBottom: 4,
         borderBottom: `1px solid #E5E5E5`,
+        visibility: rowNode.hidden ? 'hidden' : 'visible'
       }}
       onClick={onRowClick}
     >
@@ -118,7 +180,7 @@ export default function TableRowComponent({
           </div>
         );
       })}
-      <Handle type="source" position={Position.Right} />
+      <Handle type="source" position={Position.Right} onClick={onHideRow} />
     </div>
   );
 }

@@ -1,11 +1,14 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import { Icon, Input, Popover, Button } from "@ss/mtd-react";
+import { Input, Popover, Button } from "antd";
 import { useRef, useState } from "react";
 import { justifyContent } from "../utils";
+import { CloseOutlined, SearchOutlined, SortAscendingOutlined } from "@ant-design/icons";
+import { COLOR_MAP } from "../../constant";
 
 export interface ITableHeaderComponentProps {
   columns: Column[];
+  groupId: string | number
 }
 export default function TableHeaderComponent({
   data,
@@ -21,24 +24,11 @@ export default function TableHeaderComponent({
   };
 
   const onReset = () => {
-    setVisible(false);
   };
 
   function SearchPane() {
     return (
       <div style={{ width: 160 }}>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Icon
-            type="close"
-            style={{
-              position: "relative",
-              top: -2,
-              right: -2,
-              cursor: "pointer",
-            }}
-            onClick={() => setVisible(false)}
-          />
-        </div>
         <Input style={{ marginTop: 6, backgroundColor: "#fff" }} />
         <div
           style={{
@@ -84,25 +74,17 @@ export default function TableHeaderComponent({
               justifyContent: justifyContent(col.align),
             }}
           >
-            <label style={{ marginRight: 4 }}>{col.label}</label>
+            <label style={{ marginRight: 4, fontSize: 12 }}>{col.label}</label>
             {col.searchable && (
               <Popover
                 placement="bottom"
                 content={<SearchPane />}
-                getContainer={popoverContainer}
                 trigger="click"
-                visible={visible}
-                onDocumentClick={(_visible) => {
-                  console.log(_visible);
-                  if (_visible) {
-                    setVisible(false);
-                  }
-                }}
               >
-                <Icon type="search" onClick={() => setVisible(true)} />
+                <SearchOutlined style={{ fontSize: 12, position: 'relative', top: 1 }} onClick={() => setVisible(true)} />
               </Popover>
             )}
-            {col.sortable && <Icon type="sort" />}
+            {col.sortable && <SortAscendingOutlined style={{ color: COLOR_MAP.GREEN }} />}
           </div>
         );
       })}

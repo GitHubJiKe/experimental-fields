@@ -11,7 +11,7 @@ export interface TableBarNode {
   position: TPosition;
   style?: CSSProperties;
   extend: "parent";
-  parentId: string;
+  parentId?: string;
   draggable?: boolean;
 }
 
@@ -25,5 +25,6 @@ export function genTableBarNode(
     type: TABLE_BAR_NODE_TYPE,
     draggable: false,
     zIndex: 1,
+    parentId: cardNodeId,
   };
 }
